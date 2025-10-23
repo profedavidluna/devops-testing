@@ -11,6 +11,7 @@ const app = express();
 // Middlewares de seguridad
 app.use(helmet());
 app.use(cors());
+//Prueba
 
 // Middlewares de aplicación
 app.use(express.json());
