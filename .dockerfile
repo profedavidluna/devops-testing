@@ -8,7 +8,7 @@ RUN npm ci --only=production
 COPY src/ ./src/
 COPY public/ ./public/
 
-EXPOSE 3000
+EXPOSE 3001
 
 USER node
 
