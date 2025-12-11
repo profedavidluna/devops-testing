@@ -22,6 +22,7 @@ app.use('/', indexRoutes);
 app.use('/health', healthRoutes);
 
 // Middleware de manejo de errores 404
+//Mensaje de prueba
 app.use((req, res) => {
   res.status(404).json({
     error: 'Ruta no encontrada',
