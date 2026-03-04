@@ -51,13 +51,8 @@ jobs:
         run: |
           S=$(( (RANDOM % 10) + 1 ))
           sleep "$S"
+          echo "✅ [${{ inputs.stage }}] Phase 3 finished (slept ${S}s)"
 
-          if [ "${{ inputs.fail_phase_3 }}" = "true" ]; then
-            echo "❌ [${{ inputs.stage }}] Phase 3 failed intentionally (slept ${S}s)"
-            exit 1
-          else
-            echo "✅ [${{ inputs.stage }}] Phase 3 finished (slept ${S}s)"
-          fi
 
       - name: Phase 4
         shell: bash
