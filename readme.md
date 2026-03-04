@@ -12,7 +12,9 @@ Esta es una aplicación Node.js/Express diseñada para aprender y practicar GitH
 
 ### 📦 Instalación
 # Prueba con mis estudiantes
+# Prurba de clase
 ```bash
+
 ## Clonar el repositorio
 git clone <url-del-repositorio>
 cd github-actions-course
