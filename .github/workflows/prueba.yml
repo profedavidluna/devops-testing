@@ -1,4 +1,4 @@
-name: Simulated 5-Step Pipeline
+name: Simulated 5-Step Pipeline (Fail on Phase 3)
 
 on:
   push:
@@ -10,37 +10,50 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Step 1 - Phase A (simulated)
+      - name: Step 1 - Phase 1 (simulated)
         shell: bash
         run: |
           S=$(( (RANDOM % 10) + 1 ))
           sleep "$S"
-          echo "✅ Phase A finished (slept ${S}s)"
+          echo "✅ Phase 1 finished (slept ${S}s)"
 
-      - name: Step 2 - Phase B (simulated)
+      - name: Step 2 - Phase 2 (simulated)
         shell: bash
         run: |
           S=$(( (RANDOM % 10) + 1 ))
           sleep "$S"
-          echo "✅ Phase B finished (slept ${S}s)"
+          echo "✅ Phase 2 finished (slept ${S}s)"
 
-      - name: Step 3 - Phase C (simulated)
+      # Fase 3: fallo intencional
+      - name: Step 3 - Phase 3 (simulated - intentional failure)
         shell: bash
         run: |
           S=$(( (RANDOM % 10) + 1 ))
           sleep "$S"
-          echo "✅ Phase C finished (slept ${S}s)"
+          echo "❌ Phase 3 failed intentionally after ${S}s"
+          exit 1
 
-      - name: Step 4 - Phase D (simulated)
+      - name: Step 4 - Phase 4 (simulated)
         shell: bash
         run: |
           S=$(( (RANDOM % 10) + 1 ))
           sleep "$S"
-          echo "✅ Phase D finished (slept ${S}s)"
+          echo "✅ Phase 4 finished (slept ${S}s)"
 
-      - name: Step 5 - Phase E (simulated)
+      - name: Step 5 - Phase 5 (simulated)
         shell: bash
         run: |
           S=$(( (RANDOM % 10) + 1 ))
           sleep "$S"
-          echo "✅ Phase E finished (slept ${S}s)"
+          echo "✅ Phase 5 finished (slept ${S}s)"
+
+      # Notificación final: siempre corre, aunque falle antes
+      - name: Final notification (success/failure)
+        if: always()
+        shell: bash
+        run: |
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "🎉 PIPELINE SUCCESS: All phases completed successfully."
+          else
+            echo "🚨 PIPELINE FAILED: One or more phases failed. Check logs above."
+          fi
