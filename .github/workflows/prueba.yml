@@ -1,0 +1,46 @@
+name: Simulated 5-Step Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  simulated:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Step 1 - Phase A (simulated)
+        shell: bash
+        run: |
+          S=$(( (RANDOM % 10) + 1 ))
+          sleep "$S"
+          echo "✅ Phase A finished (slept ${S}s)"
+
+      - name: Step 2 - Phase B (simulated)
+        shell: bash
+        run: |
+          S=$(( (RANDOM % 10) + 1 ))
+          sleep "$S"
+          echo "✅ Phase B finished (slept ${S}s)"
+
+      - name: Step 3 - Phase C (simulated)
+        shell: bash
+        run: |
+          S=$(( (RANDOM % 10) + 1 ))
+          sleep "$S"
+          echo "✅ Phase C finished (slept ${S}s)"
+
+      - name: Step 4 - Phase D (simulated)
+        shell: bash
+        run: |
+          S=$(( (RANDOM % 10) + 1 ))
+          sleep "$S"
+          echo "✅ Phase D finished (slept ${S}s)"
+
+      - name: Step 5 - Phase E (simulated)
+        shell: bash
+        run: |
+          S=$(( (RANDOM % 10) + 1 ))
+          sleep "$S"
+          echo "✅ Phase E finished (slept ${S}s)"
