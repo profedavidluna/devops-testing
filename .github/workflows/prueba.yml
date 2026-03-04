@@ -1,59 +1,86 @@
-name: Simulated 5-Step Pipeline (Fail on Phase 3)
+name: 5-Phase Pipeline (Manual Stage)
 
 on:
-  push:
-    branches: [ "main" ]
   workflow_dispatch:
+    inputs:
+      stage:
+        description: "Stage to deploy"
+        required: true
+        type: choice
+        options:
+          - dev
+          - test
+          - prod
+      fail_phase_3:
+        description: "Simulate failure in phase 3"
+        required: true
+        type: choice
+        options:
+          - "false"
+          - "true"
+
+concurrency:
+  group: pipeline-5-phases-${{ inputs.stage }}
+  cancel-in-progress: true
 
 jobs:
-  simulated:
+  run:
+    name: Run 5 phases on ${{ inputs.stage }}
     runs-on: ubuntu-latest
 
+    # Esto hace que GitHub use el Environment dev/test/prod (secrets + approvals)
+    environment: ${{ inputs.stage }}
+
     steps:
-      - name: Step 1 - Phase 1 (simulated)
+      - name: Phase 1
         shell: bash
         run: |
           S=$(( (RANDOM % 10) + 1 ))
           sleep "$S"
-          echo "✅ Phase 1 finished (slept ${S}s)"
+          echo "✅ [${{ inputs.stage }}] Phase 1 finished (slept ${S}s)"
 
-      - name: Step 2 - Phase 2 (simulated)
+      - name: Phase 2
         shell: bash
         run: |
           S=$(( (RANDOM % 10) + 1 ))
           sleep "$S"
-          echo "✅ Phase 2 finished (slept ${S}s)"
+          echo "✅ [${{ inputs.stage }}] Phase 2 finished (slept ${S}s)"
 
-      # Fase 3: fallo intencional
-      - name: Step 3 - Phase 3 (simulated - intentional failure)
+      - name: Phase 3 (optional failure)
         shell: bash
         run: |
           S=$(( (RANDOM % 10) + 1 ))
           sleep "$S"
-          echo "❌ Phase 3 failed intentionally after ${S}s"
-          exit 1
 
-      - name: Step 4 - Phase 4 (simulated)
+          if [ "${{ inputs.fail_phase_3 }}" = "true" ]; then
+            echo "❌ [${{ inputs.stage }}] Phase 3 failed intentionally (slept ${S}s)"
+            exit 1
+          else
+            echo "✅ [${{ inputs.stage }}] Phase 3 finished (slept ${S}s)"
+          fi
+
+      - name: Phase 4
         shell: bash
+        if: always()
         run: |
           S=$(( (RANDOM % 10) + 1 ))
           sleep "$S"
-          echo "✅ Phase 4 finished (slept ${S}s)"
+          echo "✅ [${{ inputs.stage }}] Phase 4 finished (slept ${S}s)"
 
-      - name: Step 5 - Phase 5 (simulated)
+      - name: Phase 5
         shell: bash
+        if: always()
         run: |
           S=$(( (RANDOM % 10) + 1 ))
           sleep "$S"
-          echo "✅ Phase 5 finished (slept ${S}s)"
+          echo "✅ [${{ inputs.stage }}] Phase 5 finished (slept ${S}s)"
 
-      # Notificación final: siempre corre, aunque falle antes
       - name: Final notification (success/failure)
         if: always()
         shell: bash
         run: |
           if [ "${{ job.status }}" = "success" ]; then
-            echo "🎉 PIPELINE SUCCESS: All phases completed successfully."
+            echo "🎉 PIPELINE SUCCESS on stage '${{ inputs.stage }}'"
           else
-            echo "🚨 PIPELINE FAILED: One or more phases failed. Check logs above."
+            echo "🚨 PIPELINE FAILED on stage '${{ inputs.stage }}' (check Phase 3 logs)"
           fi
